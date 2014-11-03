@@ -27,6 +27,9 @@ var allowCrossDomain = function(req, res, next) {
   next();
 }
 
+
+
+
 /**
     example game_instances:
     game_instances: {
@@ -45,7 +48,7 @@ var allowCrossDomain = function(req, res, next) {
                 has_requested_score: false,
                 user_name: "||shakeZofFury||"
             }
-            start_time: 18397393849384934342342,
+            start_time: 18397393849384934342342,s
             end_time: null,
             game_type: "shake_game",
 
@@ -115,12 +118,13 @@ app.get('/get_data', function (req, res, next) {
     var res_user_id = req.body.user_id;
     var res_session_id = req.body.session_id;
     var users_game = game_instances['speed_game_' + game_id]['user_id_' + user_id];
+    // check session id to be correct
     if (users_game[session_id] == res_session_id) {
-
+  
       if (users_game[score] == 'null') {
         res.writeHead(200, {"Content-Type": "text/html"});
         res.write('not available yet');
-        res.end();
+        res.end();    
       } else {
         res.writeHead(200, {"Content-Type": "text/html"});
         res.write(users_game[score]);
@@ -129,19 +133,16 @@ app.get('/get_data', function (req, res, next) {
           users_game[has_requested_final_score] = true;
         }
       }
-    }
-})
+      
+    } 
+    
+}) 
 
 // Post to submit
-app.post('/submit_game_end', function (req, res, next) {
+app.post('/submit', function (req, res, next) {
     var startTime = req.body.startTime;
     var endTime = req.body.endTime;
     res.writeHead(200, {"Content-Type": "text/html"});
-
-    var game_id = req.body.game_id;
-    var session_id = req.body.session_id;
-    var game_type = game_instances[game_id][game_type];
-
 
     console.log('http://cse490m2.cs.washington.edu:8080/api/user_data/1/' + startTime   + '/' + endTime);
     request({
@@ -223,36 +224,3 @@ function startGame(game_id, game_type, arena_location) {
     // Push notification to those users asking them if they want to join the game, making sure to send them the game_id
 
 }
-
-function getGameData(session_id, processData) {
-  var endTime = new Date().getTime();
-  var http = new XMLHttpRequest();
-  // from sample purpose
-  // startTime = 1;
-  // endTime = 1413840492295460000;
-  console.log(startTime + " startTime");
-  console.log(endTime + " endTime");
-
-  var url = 'http://cse490m2.cs.washington.edu:8080/api/user_data?session_id=' + session_id;
-  // var url = 'http://cse490m2.cs.washington.edu:8080/api/user_data?id=' + userid + "&start=" + startTime + "&end=" + endTime;
-  http.open("GET", url, true);
-
-  http.setRequestHeader("Content-type", "application/json");    
-  http.onreadystatechange = function() {
-    if(http.readyState == 4 && http.status == 200) {
-      // suppose this data is already filtered according to the given timestamp
-      var response = http.responseText;
-      console.log("Got response from submit: " + http.responseText);
-      console.log("Got response in submitTime(): " + response);
-      var ans = getNumShakes(response);
-      processData(response);
-      // maxAcceleration(response);
-      // then POST to submit page later?
-    } 
-  }
-
-  http.send();
-}
-
-
-

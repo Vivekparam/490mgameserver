@@ -1,0 +1,29 @@
+/* stylesheet for the client side page */
+p#countdown {
+    font-size: 400%;
+}
+
+#App {
+    //width: 20%;
+    padding: 100px;
+    margin: auto;
+    color: #484848;
+}
+
+#countdownbox {
+    padding: 15%;
+}
+
+h1 {
+    color: #CCFFFF;
+}
+
+button {
+    padding-top: 30%;
+}
+
+body {
+    //background: url("../images/flowers.jpg");
+    background-size: 100%;
+    top: 50%;
+}
