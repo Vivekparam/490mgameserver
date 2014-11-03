@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+    <title>Game Results</title>
+  </head>
+
+  <body>
+    <div ng-app="" ng-controller="ResultsController">
+      
+    </div>
+  </body>
+
+  <script>
+    function processData(jsonResponse) {
+      
+      return jsonResponse;
+    }
+
+    function printResults(data) {
+      //print a specific player's data for now
+      var size = 1;
+      document.write('<table border="1" cellspacing="1" cellpadding="5">')
+      for (i = 0; i < size; i++) {
+        document.write('<tr>')
+        document.write('<td>row ' + i + '  </td>')
+        document.write('<td> ' + data + '  </td>')
+        //document.write('<td>row ' + i + ', column 2</td>')
+        document.write('</tr>')
+      } 
+      document.write('<table>')   
+    } 	
+
+    function ResultsController($scope, $http) {
+      $http({
+ 	url: 'http://cse490m2.cs.washington.edu/api/get_data', 
+	method: 'GET',
+	data: {userId: $scope.userName}
+      }).success(function() {
+	var result = processData(jsonResponse);
+	printResults(result);
+      });
+      var result = processData("blahblahblah");
+      printResults(result);    
+    }
+  </script>
+</html>       
+
