@@ -103,7 +103,7 @@ app.post('/start_game', function (req, res, next) {
     arena_location = req.body.gps_location;
   }
 
-  startGame(game_id, game_type, arena_location); //
+  startGame(game_id, game_type, arena_location);
   res.writeHead(200, {"Content-Type": "text/html"});
   res.write(game_id);
   res.end();
@@ -148,7 +148,7 @@ app.post('/submit_game_end', function (req, res, next) {
     //uri: 'http://cse490m2.cs.washington.edu:8080/api/user_data&id=1&start=1&end=200000000000',
 
       uri: 'http://cse490m2.cs.washington.edu:8080/api/user_data?end=200000000000&id=1&start=1',  
-    // uri: 'http://cse490m2.cs.washington.edu:8080/api/user_data/1/' + startTime+ '/' + endTime,
+    // uri: 'http://cse490m2.cs.washington.edu:8080/api/user_data/1/' + startTime+ '/'+ endTime,
       method: "GET",
       timeout: 10000,
       followRedirect: true,

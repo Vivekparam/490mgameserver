@@ -11,10 +11,14 @@ document.onready=function() {
   window.GAME_SERVER_ENDPOINT = 'http://cse490m1.cs.washington.edu:8080'
 }
 
+function request_start() {
+  url = window.GAME_SERVER_ENDPOINT + '/'
+}
+
 function start() {
   var userid = getUserId();
   var startTime = new Date().getTime();
-    console.log(startTime + " startTime");
+  console.log(startTime + " startTime");
 
   startSensors();
   var e = document.getElementById("game");
@@ -44,7 +48,7 @@ function finishCountHandler(e) {
 }
 
 function gameEnded(startTime, session_id) {
-  var url = 
+  // var url = 
 }
 
 
