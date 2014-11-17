@@ -3,6 +3,7 @@ module.exports = {
   // TODO: remove this when support for two players works
   // hard coded data for player one
   CIRCLE_AND_CIRCLE_BACK: [[0,0,0]],
+  TOLLERANCE: 3,
 
   parseNum: function(data) {
     if (data.length > 0) {
