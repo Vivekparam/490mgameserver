@@ -2,71 +2,128 @@ document.onready=function() {
   //$("#start").on("click", start);
   $(document).on("finishCountDown", finishCountHandler);
 
-  window.GAME_TYPE_MAX_ACCEL = 0;
-  window.GAME_TYPE_SHAKE = 'shake';
-  window.GAME_TYPE_MAX_VELOCITY = 'speed';
-  window.GAME_TYPE_RACE = 4;
-  window.gameType = null;
+  window.GAME_TYPES = ["shake", "maxAccel", "race", "mimic"];
+  window.game_type = null;
 
-  window.GAME_SERVER_ENDPOINT = 'http://cse490m1.cs.washington.edu:8080'
-}
-
-function request_start() {
-  url = window.GAME_SERVER_ENDPOINT + '/'
+  window.GAME_SERVER_ENDPOINT = 'http://cse490m1.cs.washington.edu:3000'
+  window.GAME_START_ENDPOINT = window.GAME_SERVER_ENDPOINT + "/start_game"
+  window.GAME_END_ENDPOINT = window.GAME_SERVER_ENDPOINT + "/submit_game_end"
 }
 
 function start() {
-  var userid = getUserId();
   var startTime = new Date().getTime();
   console.log(startTime + " startTime");
-
+  userId = getUserId()
+  startTime = Sensors.getTime();
   startSensors();
+
   var e = document.getElementById("game");
-  window.gameType = e.options[e.selectedIndex].value;
-  console.log("Playing game: " + window.gameType)
-  countdown(30, window.GAME_TYPE_MAX_ACCEL);
+  window.game_type = window.GAME_TYPES[parseInt(e.options[e.selectedIndex].value)]; // games are indexed
+  console.log("Starting game: " + window.game_type);
+
+
+  if(startTime != null) {
+    data = {
+      user_id :  userId,
+      game_type : game_type,
+      start_time : startTime
+    }
+    req = new XMLHttpRequest();
+    req.open("POST", window.GAME_START_ENDPOINT, false);
+    req.setRequestHeader("Content-type", "application/json");
+    req.onreadystatechange = function() {
+      console.log("Recieved response from " + window.GAME_START_ENDPOINT + ": " + req.responseText);
+      game_id = JSON.parse(req.responseText).game_id;
+
+      var game = { 
+          game_type : game_type,
+          startTime : startTime,
+          game_id : game_id
+      }
+      countdown(3, game);
+    }
+    req.send(JSON.stringify(data));
+  }
 }
 
+// Called whenever finishCountDown event is fired
+// the parameter e should have a game_type and startTime attributes
 function finishCountHandler(e) {
-  var gameType = e.gameType;
-  var startTime = e.startTime;
-  var session_id = e.session_id;
-  if (gameType == window.GAME_TYPE_MAX_ACCEL) {
-    gameEnded(startTime, session_id);
-  } else if (gameType == window.GAME_TYPE_SHAKE) {
-    // 
-  } else if (gameType == window.GAME_TYPE_MAX_VELOCITY) {
-    //
-  } else if (gameType == window.GAME_TYPE_RACE) {
-    //
+  var game = e.game;
+  if (game_type == window.GAME_TYPES[0]) {
+    shakeGameEnded(game);
+  } else if (game_type == window.GAME_TYPES[1]) {
+    maxAccelEnded(game); 
+  } else if (game_type == window.GAME_TYPES[2]) {
+    // TODO: race Game Ended
   } else {
-    console.log("Unknown game type passed in:" + gameType);
+    console.log("Unknown game type passed in:" + game_type);
   }
-  
   stopSensors();
   showResults();
 }
 
-function gameEnded(startTime, session_id) {
-  // var url = 
+function shakeGameEnded(game) {
+  // tell server game ended
+  stopSensors();
+
+  console.log(game)
+  data = {
+    game_id : game.game_id,
+    user_id : getUserId(),
+    end_time : Sensors.getTime()
+  }
+  req = new XMLHttpRequest();
+  req.open("POST", window.GAME_END_ENDPOINT, false);
+  req.setRequestHeader("Content-type", "application/json");
+
+  req.onreadystatechange = function() {
+    console.log("Recieved response from " + window.GAME_END_ENDPOINT + ": " + req.responseText);
+    // print results
+    document.getElementById("printResult").innerHTML = req.responseText;
+  }
+  console.log(JSON.stringify(data))
+  req.send(JSON.stringify(data));
+  // request results from endpoint TODO
+  // display results from server
+}
+
+function raceGameEnded(game) {
+    stopSensors();
 }
 
 
 function getUserId() {
   // get from phone
-  return 'cc472b7cc75810ee';
+  return Sensors.getDeviceID();
 }
-
-
 
 function startSensors() {
   //start thems
+  config = { 
+  "timeout": 10000, 
+  "sensors": [
+      { 
+        "name": "TYPE_ACCELEROMETER", 
+        "rate": 10
+      }
+    ]
+  }
+  Sensors.loadConfig(JSON.stringify(config), "derp");
 }
 
 function stopSensors() {
-  //stop em
+  config = { 
+    "timeout": 30000, 
+    "sensors": []
+  }
+  Sensors.loadConfig(JSON.stringify(config), "derp");
 }
 
 function showResults() {
 
+}
+
+function refreshPage() {
+  location.reload();
 }

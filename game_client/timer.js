@@ -1,8 +1,8 @@
 // pass in interval to countdown in seconds and a callback function
-function countdown(interval, gameType) {
+function countdown(interval, game) {
   var countdown = document.getElementById("countdown");
-  var startTime = new Date().getTime(); 
   var secondsLeft = interval;
+  startTime = game.startTime;
   countdown.innerHTML = interval;
   var id = setInterval(function () {
     secondsLeft = secondsLeft - 1;
@@ -10,13 +10,10 @@ function countdown(interval, gameType) {
     if (secondsLeft == 0) {
       clearInterval(id);
       //countdown.innerHTML = "";
-
       $(document).trigger({
         type: "finishCountDown",
         message: "",
-        startTime: startTime,
-        endTime: new Date().getTime(),
-        gameType: gameType
+        game: game
       });
     }
   }, 1000);

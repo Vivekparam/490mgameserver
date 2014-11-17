@@ -12,10 +12,7 @@ var request = require("request");
 
 require('./views/communicator.js')
 require('./views/timer.js')
-// var shakeobj = require('./process_data/shake.js');
-var shakeobj = require('./process_data/shake-mag.js');
-
-// var mimicobj = require('./process_data/mimic.js');
+require('./process_data/shake.js').
 
 var allowCrossDomain = function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -63,6 +60,7 @@ app.set('views', __dirname + '/views');
 app.engine('html', require('ejs').renderFile);
 
 app.configure(function() {
+    //app.use(allowCrossDomain);
   app.use(express.bodyParser())
   app.use(allowCrossDomain);
 
@@ -84,29 +82,23 @@ app.get('/client_results', function (req, res) {
 
 // Start a game.
 app.post('/start_game', function (req, res, next) {
-  console.log("Recieved request " + req);
+
   //var start_time = var date = new Date();
   var user_id = req.body.user_id;
   var game_type = req.body.game_type;
   var user_session_time = req.body.start_time;
   var game_id = getUniqueGameId();
 
-  console.log("start_game body")
-  console.log(req.body)
-
-  game_instances[game_id] = {
+  var game = game_instances[game_id] = {
+    user_id : {
+        "session_id" : user_session_time,
+        score : null
+    },
     "game_type" : game_type,
     start_time: user_session_time,
     end_time: null
   }; // initialize object for this game
 
-
-  var game = game_instances[game_id];
-  game[user_id] = {
-        "session_id" : null,
-        score : null,
-        user_start_time : user_session_time
-    }
   // TODO: allow multi players at once
   var arena_location = null;
   if(requiresArena(game_type)){
@@ -115,15 +107,9 @@ app.post('/start_game', function (req, res, next) {
 
   startGame(game_id, game_type, arena_location);
   res.writeHead(200, {"Content-Type": "text/html"});
-
-  var responseJSON = {
-    game_id: game_id
-  }
-  res.write(JSON.stringify(responseJSON));
-  console.log("About to sent from start_game. game_instances is ") 
-  console.log(game_instances)
+  res.write(game_id);
   res.end();
-  //next();
+  next();
 })
 
 app.get('/get_data', function (req, res, next) {
@@ -150,22 +136,20 @@ app.get('/get_data', function (req, res, next) {
 
 // Post to submit
 app.post('/submit_game_end', function (req, res, next) {
-    console.log("req body to submit game end: ") 
-    console.log(req.body)
-    var end_time = req.body.end_time;
+    var endTime = req.body.endTime;
     res.writeHead(200, {"Content-Type": "text/html"});
-    var user_id = req.body.user_id;
+
     var game_id = req.body.game_id;
     // var session_id = req.body.session_id;
     var startTime = game_instances[game_id]["start_time"];
 
-    var dataEndpoint = 'http://cse490m2.cs.washington.edu:8080/api/user_data?end='+ end_time+'&id=' + user_id + '&start=' + startTime // + '&queryFunc=TYPE_ACCELEROMETER'
-    console.log(dataEndpoint);
-    request({
-    // uri: 'http://cse490m2.cs.washington.edu:8080/api/user_data&id=1&start=1&end=200000000000',
 
-      uri: dataEndpoint,  
-      // uri: 'http://cse490m2.cs.washington.edu:8080/api/user_data/1/' + startTime+ '/'+ endTime,
+    console.log('http://cse490m2.cs.washington.edu:8080/api/user_data/1/' + startTime   + '/' + endTime);
+    request({
+    //uri: 'http://cse490m2.cs.washington.edu:8080/api/user_data&id=1&start=1&end=200000000000',
+
+      uri: 'http://cse490m2.cs.washington.edu:8080/api/user_data?end=200000000000&id=1&start=1',  
+    // uri: 'http://cse490m2.cs.washington.edu:8080/api/user_data/1/' + startTime+ '/'+ endTime,
       method: "GET",
       timeout: 10000,
       followRedirect: true,
@@ -173,16 +157,14 @@ app.post('/submit_game_end', function (req, res, next) {
     }, function(error, response, body) {
         if(error) {
             console.log(error);
-            res.end("error" + error)
         } else {
-            if(game_instances[game_id][game_type] == "")
-            var nums = shakeobj.parseNum(JSON.parse(body));
-            res.write("Number of shakes: " + nums);
-            res.end()
+            res.write(body);
         }
-      //console.log("Hah Got response: " + body);
+      console.log("Hah Got response: " + body);
     });
-    //next();
+
+    res.end("end");
+    next();
 })
 
 app.get('/db_example', function (req, res) {
