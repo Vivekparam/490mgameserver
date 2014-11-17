@@ -4,7 +4,7 @@ var express = require('express')
 var app = express();
 
 var mongojs = require("mongojs") // This is a mongo database I made the other week.
-  , uri = "mongodb://user1:user1pass@ds041140.mongolab.com:41140/mymongodb"  
+  , uri = "mongodb://user1:user1pass@ds041140.mongolab.com:41140/mymongodb"
   , collections = ["example_collection", ] // Here we define the collections in our database
   , db = mongojs.connect(uri, collections);
 
@@ -14,8 +14,7 @@ require('./views/communicator.js')
 require('./views/timer.js')
 // var shakeobj = require('./process_data/shake.js');
 var shakeobj = require('./process_data/shake-mag.js');
-
-// var mimicobj = require('./process_data/mimic.js');
+var mimicobj = require('./process_data/mimic.js');
 
 var allowCrossDomain = function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -25,7 +24,7 @@ var allowCrossDomain = function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-  res.setHeader('Access-Control-Allow-Credentials', true); 
+  res.setHeader('Access-Control-Allow-Credentials', true);
  */
   next();
 }
@@ -67,7 +66,7 @@ app.configure(function() {
   app.use(allowCrossDomain);
 
 });
-    
+
 //app.use(express.bodyParser())
 
 app.get('/', function (req, res) {
@@ -120,7 +119,7 @@ app.post('/start_game', function (req, res, next) {
     game_id: game_id
   }
   res.write(JSON.stringify(responseJSON));
-  console.log("About to sent from start_game. game_instances is ") 
+  console.log("About to sent from start_game. game_instances is ")
   console.log(game_instances)
   res.end();
   //next();
@@ -150,7 +149,7 @@ app.get('/get_data', function (req, res, next) {
 
 // Post to submit
 app.post('/submit_game_end', function (req, res, next) {
-    console.log("req body to submit game end: ") 
+    console.log("req body to submit game end: ")
     console.log(req.body)
     var end_time = req.body.end_time;
     res.writeHead(200, {"Content-Type": "text/html"});
@@ -164,7 +163,7 @@ app.post('/submit_game_end', function (req, res, next) {
     request({
     // uri: 'http://cse490m2.cs.washington.edu:8080/api/user_data&id=1&start=1&end=200000000000',
 
-      uri: dataEndpoint,  
+      uri: dataEndpoint,
       // uri: 'http://cse490m2.cs.washington.edu:8080/api/user_data/1/' + startTime+ '/'+ endTime,
       method: "GET",
       timeout: 10000,
@@ -214,9 +213,9 @@ app.get('/db_example', function (req, res) {
             i = records.length;
             console.log(records)
         while(i--) {
-            html += ' <br /><b>Source :</b> ' 
+            html += ' <br /><b>Source :</b> '
                  + records[i].source
-                 + '<br /><b>Posted at: </b>' 
+                 + '<br /><b>Posted at: </b>'
                  + new Date(records[i].timestamp).toString()
                  + '<br />';
         }
@@ -257,7 +256,7 @@ function getGameData(session_id, processData) {
   // var url = 'http://cse490m2.cs.washington.edu:8080/api/user_data?id=' + userid + "&start=" + startTime + "&end=" + endTime;
   http.open("GET", url, true);
 
-  http.setRequestHeader("Content-type", "application/json");    
+  http.setRequestHeader("Content-type", "application/json");
   http.onreadystatechange = function() {
     if(http.readyState == 4 && http.status == 200) {
       // suppose this data is already filtered according to the given timestamp
@@ -268,11 +267,8 @@ function getGameData(session_id, processData) {
       processData(response);
       // maxAcceleration(response);
       // then POST to submit page later?
-    } 
+    }
   }
 
   http.send();
 }
-
-
-
