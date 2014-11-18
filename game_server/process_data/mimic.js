@@ -2,13 +2,13 @@ module.exports = {
 
   // TODO: remove this when support for two players works
   // hard coded data for player one
-  CIRCLE_AND_CIRCLE_BACK: [[0,0,0]],
+  HARD_CODED_DATA_HACK: [[0,0,0]],
   TOLLERANCE: 3,
 
   parseNum: function(data) {
     if (data.length > 0) {
       accelerometerData = data.map(function (item) { item.value });
-      return similaityScore(CIRCLE_AND_CIRCLE_BACK, accelerometerData);
+      return similaityScore(HARD_CODED_DATA_HACK, accelerometerData);
     }
 
     return 0;
