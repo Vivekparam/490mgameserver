@@ -1,0 +1,27 @@
+var start_time = 0;
+
+
+function atSuzzallo(gps) {
+    return false;
+}
+
+function atHUB(gps) {
+    return false;
+}
+
+function start() {
+    if (!atSuzzallo(getGPS())) {
+	//start_time = cur
+    }
+}
+
+function stop() {
+    if (atHUB(getGPS()) {
+	// stop reading data
+    }
+}
+
+function getGPS() {
+    var gps;
+    return gps;
+}

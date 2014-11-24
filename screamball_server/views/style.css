@@ -1,0 +1,17 @@
+/* stylesheet for the client side page */
+p#countdown {
+    font-size: 400%;
+}
+
+#App {
+    width: 500px;
+    padding: 100px;
+    margin: auto;
+    color: white;
+}
+
+body {
+    background: url("flowers.jpg");
+    background-size: 100%;
+    top: 50%;
+}
