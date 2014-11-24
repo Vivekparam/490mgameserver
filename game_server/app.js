@@ -158,7 +158,7 @@ app.post('/submit_game_end', function (req, res, next) {
     var game_id = req.body.game_id;
     // var session_id = req.body.session_id;
     var startTime = game_instances[game_id]["start_time"];
-
+    var game_type = game_instances[game_id]["game_type"];
     var dataEndpoint = 'http://cse490m2.cs.washington.edu:8080/api/user_data?end='+ end_time+'&id=' + user_id + '&start=' + startTime // + '&queryFunc=TYPE_ACCELEROMETER'
     console.log(dataEndpoint);
     request({
@@ -175,14 +175,19 @@ app.post('/submit_game_end', function (req, res, next) {
             console.log(error);
             res.end("error" + error)
         } else {
-            if(game_instances[game_id][game_type] == "")
-            var nums = shakeobj.parseNum(JSON.parse(body));
-            res.write("Number of shakes: " + nums);
-            res.end()
+          var processedData;
+          if(game_type == "shake") {
+            processedData = shakeobj.parseNum(JSON.parse(body));
+            res.write("Number of shakes: " + processedData);
+          } else if (game_type == "mimic") {
+            processedData = mimicobj.parseNum(JSON.parse(body))
+          } else {
+            res.write("Unknown game type")
+          }
+          res.end()
         }
       //console.log("Hah Got response: " + body);
     });
-    //next();
 })
 
 app.get('/db_example', function (req, res) {

@@ -69,9 +69,7 @@ module.exports = {
 
   getCount: function() {
     return shakeCount;
-  },
-
-  
+  }
 
 };
 

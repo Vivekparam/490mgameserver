@@ -5,6 +5,13 @@ document.onready=function() {
   window.GAME_TYPES = ["shake", "maxAccel", "race", "mimic"];
   window.game_type = null;
 
+  gameSelector = document.getElementById("gameSelector"); // get dropdown menu
+  // vars i = 0;
+  // for(type in window.GAME_TYPES) {
+  //   gameSelector.innerHTML += "<option value='" + i + "'>" + window.GAME_TYPES[i] + " </option>"
+  //   i++;
+  // }
+  // gameSelector.getC
   window.GAME_SERVER_ENDPOINT = 'http://cse490m1.cs.washington.edu:3000'
   window.GAME_START_ENDPOINT = window.GAME_SERVER_ENDPOINT + "/start_game"
   window.GAME_END_ENDPOINT = window.GAME_SERVER_ENDPOINT + "/submit_game_end"
@@ -17,7 +24,7 @@ function start() {
   startTime = Sensors.getTime();
   startSensors();
 
-  var e = document.getElementById("game");
+  var e = document.getElementById("gameSelector");
   window.game_type = window.GAME_TYPES[parseInt(e.options[e.selectedIndex].value)]; // games are indexed
   console.log("Starting game: " + window.game_type);
 
@@ -74,7 +81,7 @@ function shakeGameEnded(game) {
     end_time : Sensors.getTime()
   }
   req = new XMLHttpRequest();
-  req.open("POST", window.GAME_END_ENDPOINT, false);
+  req.open("POST", window.GAME_END_ENDPOINT, true);
   req.setRequestHeader("Content-type", "application/json");
 
   req.onreadystatechange = function() {
