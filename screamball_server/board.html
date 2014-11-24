@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link href="board.css" type="text/css" rel="stylesheet" />
+		<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script src="game.js" type="text/javascript"></script>
+	</head>
+
+	<body>
+	    <canvas id="gameField"></canvas>
+   		<div id="controls">
+			<div>
+                <span> Vertical <span>
+				<input id="north" type="range" orient="vertical" min="-5" max="5" value="0" onchange="outputUpdate(value, '#volume1')"/>
+				<output for=fader id="volume1">0</output>
+			</div>
+        	<div> <span> Horizontal <span>
+                <input id="east" type="range" min="-5" max="5" value="0" onchange="outputUpdate(value, '#volume4')"/>
+				<output for=fader id="volume4">0</output>
+			</div>
+
+		</div>
+		<script>
+		function outputUpdate(vol, out) {
+			document.querySelector(out).value = vol;
+		}
+		</script>
+	
+	</body>
+</html>

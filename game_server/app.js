@@ -55,7 +55,7 @@ var allowCrossDomain = function(req, res, next) {
         }
     }
 */
-var game_instances = {}
+var game_instances = {};
 var game_instances_id = 0;
 
 app.set('views', __dirname + '/views');

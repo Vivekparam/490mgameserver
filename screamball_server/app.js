@@ -43,20 +43,21 @@ app.get('/', function (req, res) {
 });
 
 
-// Request to join a game. We either send back 
+// Request to join a game. We either send back a response letting client
+// know that they have joined game, or not
 app.post("/join_game", function(req, res, next) {
   var user_id = req.body.user_id;
   var result = {};
-  if (game_controller.getGameState() == "NOT_PLAYING") {
+  if (game_controller.getGameState() == false) {
     // add this player to game
     game_controller.addPlayer(user_id);
-    result["start_game"] = true;
+    result["join_game"] = true;
     if(game_controller.getNumPlayers() == 4) {
       game_controller.startGame();
     }
   } else {
     // try again later
-    result["start_game"] = false;
+    result["join_game"] = false;
     result["message"] = "Please try again later. Game is in progress";
   }
   res.writeHead(200, {"Content-Type": "application/json"});
@@ -69,11 +70,11 @@ app.get('/get_game_state', function(req, res) {
   var game_state = game_controller.getGameState();
 
   var result = {"game_state" : game_state };
-  if(game_state == "PLAYING") {
+  if(game_state == true) { // playing
     var ball_coords = game_controller.getBallCoords();
     result["ball_coords"] = ball_coords;
-  } else if (game_state == "NOT_PLAYING") { // Maybe make this "NOT_PLAYING"?
-    var scoreboard = game_controller.getScoreBoard();
+  } else if (game_state == false) { // Maybe make this "NOT_PLAYING"?
+    var scoreboard = game_controller.getScoreboard();
     result["scoreboard"] = scoreboard;
 
     var 

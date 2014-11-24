@@ -1,0 +1,70 @@
+$(document).ready(function () {
+
+    var canvas = $("#gameField")[0];
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#f00";
+
+
+    //game properties
+    var width = $("#gameField").width();
+    var height = $("#gameField").height();
+    var gameSpeed = 60;
+    var ballWidth = 10;
+    var maxVelocity = 10;
+
+    // Inital x and y coordinates
+    var ballX = canvas.width / 2;
+    var ballY = canvas.height / 2;
+
+    // Initial velocities in X and Y direction
+    var vX = 0;
+    var vY = 0;
+
+    function init() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (typeof game_loop != "undefined") clearInterval(game_loop);
+        gameLoop = setInterval(move, gameSpeed);
+    }
+
+    function clear() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawBall(x, y, width) {
+        ctx.fillRect(x, y, width, width);
+    }
+
+
+ 	function move() {
+		var fY = -$("#north").val();
+		var fX = $("#east").val();
+
+		vX = fX;
+		vY = fY;
+
+		var upX = ballX + Math.abs(vX)*fX + (1/2)*fX*0.00002777;
+		var upY = ballY + Math.abs(vY)*fY + (1/2)*fY*0.00002777;
+		
+        ballX = upX;
+        if (ballX <= ballWidth) {
+            ballX = 0;
+        } else if (upX >= canvas.width) {
+            ballX = canvas.width - ballWidth;
+        }
+
+        ballY = upY;
+        if (ballY <= ballWidth) {
+            ballY = 0;
+        } else if (upY >= canvas.height) {
+            ballY = canvas.height - ballWidth;
+        }
+		
+		clear();
+		drawBall(ballX, ballY, ballWidth);
+	}
+
+
+
+    init();
+});
